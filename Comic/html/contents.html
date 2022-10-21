@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        a {
+            text-decoration: none;
+            color: turquoise;
+            font-size: 30px;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+    </style>
+</head>
+<body>
+<div id="reset0">
+</div>
+<center>
+    <div id="reset2">
+        <ul id="reset3"></ul>
+    </div>
+</center>
+<script>
+    //拿到传来的数据
+    var nameEn = Pick();
+    //获取ComicName
+    let src = '../txt/' + nameEn + '/comic_name.txt';
+    var nameZh = load(src);
+    //自定义值
+    var title = nameZh;
+    //封面源地址
+    var src0 = '../txt/' + nameEn + '/cover_pic_link.txt';
+    //每一章节的名字
+    var src1 = '../txt/' + nameEn + '/chapter_name.txt';
+    //调用函数
+    var text0 = load(src0);     // js读取txt中的数据（封面）
+    var text1 = load(src1).split('\n');     // js读取txt中的数据（章节名字）
+    console.log(text1);
+    DynamicCount(nameEn, text1);  //动态数量的<a标签
+    setCoverPic(text0);         //放置封面图片
+    modifyT(title);
+
+
+    //接收传来的值
+    function getParam() {
+        try {
+            var url1 = window.location.href;
+            var result = url1.split("?")[1];
+            var keyValue = result;
+            return keyValue;
+        } catch (e) {
+            console.warn("There has no param value!");
+        }
+    };
+
+    //获取从首页传来的值
+    function Pick() {
+        let value = getParam();
+        return value;
+    }
+
+    //动态数量的<a标签
+    function DynamicCount(name, text1) {
+        for (let i = 0; i < text1.length; i++) {
+            //创建li
+            var li;
+            li = document.createElement("li");
+            li.id = 'li' + i;
+            //创建a
+            var a;
+            a = document.createElement("a");
+            a.id = 'a' + i;
+            //获取ul
+            var ul = document.getElementById("reset3");
+            //在ul中添加标签li
+            ul.appendChild(li);
+            //在li中添加标签a
+            li.appendChild(a);
+            //为新加的标签a添加数据
+            a.setAttribute("href", "chapter.html" + '?' + name + '&' + "chapter=" + (i+1));
+            a.innerHTML = text1[i];
+        }
+    }
+
+    // js读取txt中的数据
+    function load(src_file) {
+        let xhr = new XMLHttpRequest(),
+            okStatus = document.location.protocol === "file:" ? 0 : 200;
+        xhr.open('GET', src_file, false);
+        xhr.overrideMimeType("text/html;charset=utf-8");//默认为utf-8
+        xhr.send(null);
+        return xhr.status === okStatus ? xhr.responseText : null;
+    }
+
+    //放置封面图片
+    function setCoverPic(text) {
+        //创建一个img元素
+        var imgs;
+        imgs = document.createElement("img");
+        //获取div
+        var div = document.getElementById("reset0");
+        //在div中添加标签
+        div.appendChild(imgs);
+        //为新加的标签添加数据
+        imgs.setAttribute("src", text);
+
+    }
+
+    function modifyT(title) {
+        document.title = title
+    }
+
+</script>
+
+</body>
+</html>

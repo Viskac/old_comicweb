@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+
+    <style>
+        a {
+            text-decoration: none;
+            color: black;
+            font-size: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        img {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<center>
+<!--    <div id="divIndex">-->
+<!--    </div>-->
+    <table id="tableIndex" border="1" width="100%">
+    </table>
+</center>
+<script>
+    //读取name.txt
+    var stringN = load('../txt/name.txt');
+    //每一行放进数组
+    var nameComic = stringN.split('\n');
+    //拿到nameZh、En (En为了寻找文件夹，Zh为了放置名字)
+    var nameComicEn = [];
+    var nameComicZh = [];
+    var coverLink = [];
+    for (i = 0; i < nameComic.length; i++) {
+        nameComicEn[i] = nameComic[i].split('/')[0];
+        nameComicZh[i] = nameComic[i].split('/')[1];
+
+        //获取封面源地址
+        let src = '../txt/' + nameComicEn[i] + '/cover_pic_link.txt';
+        coverLink[i] = load(src);     // js读取txt中的数据（封面）
+    }
+
+
+    //放置封面
+    for (i = 0; i < nameComic.length; i++) {
+        //获取table
+        var tableIndex = document.getElementById("tableIndex");
+        //每三个放一行(第4、7、10...)
+        if (i == 0 | i % 3 == 0) {
+            //创建tr行
+            var tr = document.createElement("tr");
+            tr.setAttribute("align", "center");
+        }
+
+        //创建在该tr行里的列th
+        var th = document.createElement("th");
+        //=============================================================================
+        //创建一个a标签
+        var a = document.createElement("a");
+        a.setAttribute("href", "contents.html" + '?' + nameComicEn[i]);
+        //========================================================
+        //设置封面；创建一个img元素
+        var imgCover = document.createElement("img");
+        imgCover.setAttribute("src", coverLink[i]);
+        //========================================================
+        //设置图片下的名字；创建一个p标签
+        var pName = document.createElement("p");
+        pName.innerHTML = nameComicZh[i];
+        //========================================================
+        //向a标签中添加img和p
+        a.appendChild(imgCover);
+        a.appendChild(pName);
+        //=============================================================================
+        //把a放进th
+        th.appendChild(a);
+        //把th放进tr
+        tr.appendChild(th);
+        //把tr放进table
+        tableIndex.appendChild(tr);
+
+        // //创建一个a标签
+        // var a = document.createElement("a");
+        // a.setAttribute("href", "contents.html" + '?' + nameComicEn[i]);
+        // //获取div，并把a放进div
+        // let divIndex = document.getElementById("divIndex");
+        // divIndex.appendChild(a);
+        // //========================================================
+        // //设置封面；创建一个img元素
+        // var imgCover = document.createElement("img");
+        // imgCover.setAttribute("src", coverLink[i]);
+        // //========================================================
+        // //设置图片下的名字；创建一个p标签
+        // var pName = document.createElement("p");
+        // pName.innerHTML = nameComicZh[i];
+        // //========================================================
+        // //向a标签中添加img和p
+        // a.appendChild(imgCover);
+        // a.appendChild(pName);
+    }
+
+    // js读取txt中的数据
+    function load(src_file) {
+        let xhr = new XMLHttpRequest(),
+            okStatus = document.location.protocol === "file:" ? 0 : 200;
+        xhr.open('GET', src_file, false);
+        xhr.overrideMimeType("text/html;charset=utf-8");//默认为utf-8
+        xhr.send(null);
+        return xhr.status === okStatus ? xhr.responseText : null;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>漫画</title>
+
+    <style>
+        img {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+        }
+        @media only screen
+        and (min-device-width : 768px){
+            .PaperTitle{
+                padding: 0 8rem;
+            }
+        }
+        @media only screen
+        and (max-device-width : 768px) {
+            .PaperTitle{
+                padding: 0 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<center>
+    <div id="result"></div>
+</center>
+
+<script>
+    var Chapter_Id = 1;
+    var Name ;
+    Pick();     //处理value,并传值给Chapter_Id
+    // 每一张图片的链接
+    var src1 = '../txt/' + Name + '/chapter_' + Chapter_Id + '.txt';
+    // 每一章名字
+    var src2 = '../txt/' + Name + '/chapter_name' + '.txt';
+    //把读取的txt每一行传入数组text
+    var text1 = load(src1).split('\n');
+    var text2 = load(src2).split('\n');
+
+    DynamicCount(text1);
+    modifyT(text2); //修改Title
+
+    //控制台打印value
+    window.onload = function () {
+        console.log(getParam());
+        // alert(getParam().split("value=")[1]);
+    }
+    //接收传来的值
+    function getParam() {
+        try {
+            var url1 = window.location.href;
+            var result = url1.split("?")[1];
+            var keyValue = result;
+            return keyValue;
+        } catch (e) {
+            console.warn("There has no param value!");
+        }
+    };
+
+    //剥除”&chapter=“    ([1],表示通过split剥去某些东西后的序列的第i位)
+    function Pick() {
+        var value = getParam().split("&chapter=")
+        if (value[1]) {
+            //拿到Name
+            Name = getParam().split("&chapter=")[0];
+            //拿到目录传来的章节id
+            Chapter_Id = value[1];
+        }
+    }
+
+    // js读取txt中的数据
+    function load(src_file) {
+        let xhr = new XMLHttpRequest(),
+            okStatus = document.location.protocol === "file:" ? 0 : 200;
+        xhr.open('GET', src_file, false);
+        xhr.overrideMimeType("text/html;charset=utf-8");//默认为utf-8
+        xhr.send(null);
+        return xhr.status === okStatus ? xhr.responseText : null;
+    }
+
+    // 设置动态数量的<img,数量根据数组的元素数量
+    function DynamicCount(text1) {
+        for (let i = 0; i < text1.length; i++) {
+            //创建一个img元素
+            var imgss = "imgss"[i];
+            imgss = document.createElement("img");
+            imgss.id = imgss;
+            //获取div
+            var div = document.getElementById("result");
+            //在div中添加标签
+            div.appendChild(imgss);
+            //为新加的标签添加数据
+            imgss.setAttribute("src", text1[i]);
+        }
+    }
+
+    function modifyT(text2) {
+        // document.title = '第'+Chapter_Id+'章'
+        //document.title = 'chapter_' + Chapter_Id;
+        document.title = text2[Chapter_Id - 1];
+    }
+
+</script>
+</body>
+</html>
